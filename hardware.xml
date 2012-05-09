@@ -4,7 +4,6 @@
     <sleeposc enable="true" ppm="30" />
     <usb enable="false" />
     <txpower power="15" bias="5" />
-    <usart channel="0" mode="spi_slave" alternate="2" polarity="negative" phase="1" endianness="MSB" endpoint="none" />
-<!--    <usart channel="1" mode="uart" alternate="1" baud="9600" flow="false" endpoint="uart1" /> -->
+    <usart channel="1" mode="uart" alternate="1" baud="9600" flow="false" endpoint="none" />
 	<script enable="true" />
 </hardware>

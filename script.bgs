@@ -23,41 +23,19 @@ event system_boot( major, minor, patch, build, ll_version, protocol_version, hw 
 	call attributes_write( xgatt_response, 0, 5, "00-00" )
 	
 	# Configure port P1_5 as output
-	call hardware_io_port_config_direction( 0, $20 )
-	call hardware_io_port_write( 0, $20, $20 );
-	is_on = 1
-	
-#	call system_endpoint_tx( system_endpoint_uart1, 6, "READY-" )
-end
-
-# Received data on UART
-event system_endpoint_rx( endpoint, data_len, data_data )
-	# Toggle LED
-	if is_on = 1 then
-		is_on = 0
-		call hardware_io_port_write( 0, $20, 0 )
-	else
-		is_on = 1
-		call hardware_io_port_write( 0, $20, $20 )
-	end if
+	# call hardware_io_port_config_direction( 0, $20 )
+	# call hardware_io_port_write( 0, $20, $20 );
+	# is_on = 1
+	# call system_endpoint_tx( system_endpoint_uart1, 6, "READY-" )
 end
 
 # Attribute changed
 event attributes_value( connection, reason, handle, offset, value_len, value )
 	if handle = xgatt_command then
-		# Toggle LED
-		if is_on = 1 then
-			is_on = 0
-			call hardware_io_port_write( 0, $20, 0 )
-		else
-			is_on = 1
-			call hardware_io_port_write( 0, $20, $20 )
-		end if
-		
-#		call system_endpoint_tx( system_endpoint_uart1, 2, "C:" )
-#		call system_endpoint_tx( system_endpoint_uart1, value_len, value(0:value_len) )
-#		call system_endpoint_tx( system_endpoint_uart1, 1, "-" )
-		
+		# Echo command to serial
+		call system_endpoint_tx( system_endpoint_uart1, 1, value(0:1) )
+		call system_endpoint_tx( system_endpoint_uart1, 1, "\n" )
+
 		# Increase cmd_counter (and wrap around if necessary)
 		cmd_counter = cmd_counter + 1
 		if cmd_counter > 99 then
@@ -74,17 +52,9 @@ event attributes_value( connection, reason, handle, offset, value_len, value )
 	end if
 end
 
-#event hardware_soft_timer( handle )
-#	# Ignore handle – we have only one timer
-#	call system_endpoint_tx( system_endpoint_uart1, 5, "PING-" )
-#	counter = counter + 1
-#	if counter = 4 then
-#		call attributes_write( xgatt_response, 0, 5, "xxxxx" )
-#	end if
-#end
-
 event connection_status(connection, flags, address, address_type, conn_interval, timeout, latency, bonding)
-#	call system_endpoint_tx( system_endpoint_uart1, 8, "Connect-" )
+	# Connected: send message over USART
+	call system_endpoint_tx( system_endpoint_uart1, 2, "C\n" )
 	
 	cmd_counter = 0
 	rx_counter = 0
@@ -93,7 +63,6 @@ end
 
 # Disconnection event listener
 event connection_disconnected(handle, result)
-#	call system_endpoint_tx( system_endpoint_uart1, 11, "Disconnect-" )
     call gap_set_mode( gap_general_discoverable, gap_undirected_connectable )
 
 	# Reset counters
