@@ -32,8 +32,8 @@ end
 # Attribute changed
 event attributes_value( connection, reason, handle, offset, value_len, value )
 	if handle = xgatt_command then
-		# Echo command to serial
-		call system_endpoint_tx( system_endpoint_uart1, 1, value(0:1) )
+		# Echo atribute (i.e. command) to serial
+		call system_endpoint_tx( system_endpoint_uart1, 5, value(0:5) )
 		call system_endpoint_tx( system_endpoint_uart1, 1, "\n" )
 
 		# Increase cmd_counter (and wrap around if necessary)
