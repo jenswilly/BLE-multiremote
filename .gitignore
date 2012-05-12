@@ -25,3 +25,5 @@ build
 
 # Ignore Icon.png in root folder (for Tower)
 /Icon.png
+
+Thumbs.db
