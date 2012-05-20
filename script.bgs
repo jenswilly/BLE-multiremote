@@ -26,15 +26,15 @@ event system_boot( major, minor, patch, build, ll_version, protocol_version, hw 
 	# call hardware_io_port_config_direction( 0, $20 )
 	# call hardware_io_port_write( 0, $20, $20 );
 	# is_on = 1
-	# call system_endpoint_tx( system_endpoint_uart1, 6, "READY-" )
+	# call system_endpoint_tx( system_endpoint_uart0, 6, "READY-" )
 end
 
 # Attribute changed
 event attributes_value( connection, reason, handle, offset, value_len, value )
 	if handle = xgatt_command then
 		# Echo atribute (i.e. command) to serial
-		call system_endpoint_tx( system_endpoint_uart1, 5, value(0:5) )
-		call system_endpoint_tx( system_endpoint_uart1, 1, "\n" )
+		call system_endpoint_tx( system_endpoint_uart0, 5, value(0:5) )
+		call system_endpoint_tx( system_endpoint_uart0, 1, "\n" )
 
 		# Increase cmd_counter (and wrap around if necessary)
 		cmd_counter = cmd_counter + 1
@@ -54,7 +54,7 @@ end
 
 event connection_status(connection, flags, address, address_type, conn_interval, timeout, latency, bonding)
 	# Connected: send message over USART
-	call system_endpoint_tx( system_endpoint_uart1, 2, "C\n" )
+	call system_endpoint_tx( system_endpoint_uart0, 2, "C\n" )
 	
 	cmd_counter = 0
 	rx_counter = 0
