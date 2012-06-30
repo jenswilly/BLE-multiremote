@@ -6,7 +6,7 @@ dim is_on
 event system_boot( major, minor, patch, build, ll_version, protocol_version, hw )
 
 	# Set advertisement interval to 100 to 500ms. Use all advertisement channels
-	call gap_set_adv_parameters( 20, 1	00, 7 )
+	call gap_set_adv_parameters( 20, 100, 7 )
 	
 	#set to advertising mode
 	call gap_set_mode( gap_general_discoverable, gap_undirected_connectable )
@@ -63,7 +63,11 @@ end
 
 # Disconnection event listener
 event connection_disconnected(handle, result)
+	# Disconnected: send message to MCU
+	call system_endpoint_tx( system_endpoint_uart0, 2, "D\n" )
+	
     call gap_set_mode( gap_general_discoverable, gap_undirected_connectable )
+	call gap_set_adv_parameters( 20, 100, 7 )
 
 	# Reset counters
 	cmd_counter = 0
