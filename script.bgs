@@ -14,19 +14,9 @@ event system_boot( major, minor, patch, build, ll_version, protocol_version, hw 
 	#set bondable mode
 	call sm_set_bondable_mode(1)
 	
-	# Start timer at 5 secs (5 * 32768) interval, repeating
-	# call hardware_set_soft_timer( 163840, 0, 0 )
-	
 	# Set response attribute to initial value
 	cmd_counter = 0
 	rx_counter = 0
-#	call attributes_write( xgatt_response, 0, 5, "00-00" )
-	
-	# Configure port P1_5 as output
-	# call hardware_io_port_config_direction( 0, $20 )
-	# call hardware_io_port_write( 0, $20, $20 );
-	# is_on = 1
-	# call system_endpoint_tx( system_endpoint_uart0, 6, "READY-" )
 end
 
 # Attribute changed
@@ -35,20 +25,6 @@ event attributes_value( connection, reason, handle, offset, value_len, value )
 		# Echo atribute (i.e. command) to serial
 		call system_endpoint_tx( system_endpoint_uart0, 5, value(0:5) )
 		call system_endpoint_tx( system_endpoint_uart0, 1, "\n" )
-
-		# Increase cmd_counter (and wrap around if necessary)
-#		cmd_counter = cmd_counter + 1
-#		if cmd_counter > 99 then
-#			cmd_counter = 0
-#		end if
-
-		# Set attribute
-#		string(0:1) = (cmd_counter / 10) + 48 
-#		string(1:1) = cmd_counter + (cmd_counter / 10 * -10) + 48
-#		string(2:1) = 45
-#		string(3:1) = (rx_counter / 10) + 48 
-#		string(4:1) = rx_counter + (rx_counter / 10 * -10) + 48
-#		call attributes_write( xgatt_response, 0, 5, string(0:5) )
 	end if
 end
 
@@ -58,7 +34,6 @@ event connection_status(connection, flags, address, address_type, conn_interval,
 	
 	cmd_counter = 0
 	rx_counter = 0
-#	call attributes_write( xgatt_response, 0, 5, "00-00" )
 end
 
 # Disconnection event listener
@@ -72,5 +47,4 @@ event connection_disconnected(handle, result)
 	# Reset counters
 	cmd_counter = 0
 	rx_counter = 0
-#	call attributes_write( xgatt_response, 0, 5, "00-00" )
 end
