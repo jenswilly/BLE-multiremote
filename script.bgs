@@ -2,6 +2,7 @@ dim cmd_counter
 dim rx_counter
 dim string(5)
 dim is_on
+dim data( 25 )
 
 event system_boot( major, minor, patch, build, ll_version, protocol_version, hw )
 
@@ -11,6 +12,40 @@ event system_boot( major, minor, patch, build, ll_version, protocol_version, hw 
 	#set to advertising mode
 	call gap_set_mode( gap_general_discoverable, gap_undirected_connectable )
 	
+	# Initialize iBeacon advertisement data
+	# UUID = 83 25 6b 74 78 d0 43 a4 82 69 05 f9 dc 8a 44 ba
+	# Major = 00 10
+	# Minor = 00 20
+	# Measured power = -58
+	data( 0:1) = $4c
+	data( 1:1) = $00
+	data( 2:1) = $02
+	data( 3:1) = $15
+	data( 4:1) = $83
+	data( 5:1) = $25
+	data( 6:1) = $6b
+	data( 7:1) = $74
+	data( 8:1) = $78
+	data( 9:1) = $d0
+	data(10:1) = $43
+	data(11:1) = $a4
+	data(12:1) = $82
+	data(13:1) = $69
+	data(14:1) = $05
+	data(15:1) = $f9
+	data(16:1) = $dc
+	data(17:1) = $8a
+	data(18:1) = $44
+	data(19:1) = $ba
+	data(20:1) = $00
+	data(21:1) = $10
+	data(22:1) = $00
+	data(23:1) = $20
+	data(24:1) = $c6
+
+	# Set advertisement data
+	call gap_set_adv_data(0, 25, data(0:25))
+
 	#set bondable mode
 	call sm_set_bondable_mode(1)
 	
