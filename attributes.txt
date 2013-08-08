@@ -1,0 +1,2 @@
+xgatt_command 24
+xgatt_response 26
